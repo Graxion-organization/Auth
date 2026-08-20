@@ -72,7 +72,10 @@ export default function Signup() {
     try {
       await signup({ ...formData, product });
       if (redirectTo) {
-        window.location.href = redirectTo;
+        // Pass the token via URL for cross-domain SSO
+        const token = localStorage.getItem('graxion_access_token');
+        const sep = redirectTo.includes('?') ? '&' : '?';
+        window.location.href = token ? `${redirectTo}${sep}token=${token}` : redirectTo;
       } else {
         navigate('/profile');
       }
