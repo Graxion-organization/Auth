@@ -674,6 +674,8 @@ function ProductsTab() {
     } finally {
       setLoading(false);
     }
+  };
+
   const handleProductClick = async (e, product) => {
     if (product.url === '#') {
       e.preventDefault();
