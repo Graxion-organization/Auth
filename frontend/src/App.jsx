@@ -42,7 +42,8 @@ function GuestRoute({ children }) {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/profile" replace />;
+    const search = window.location.search;
+    return <Navigate to={`/profile${search}`} replace />;
   }
 
   return children;

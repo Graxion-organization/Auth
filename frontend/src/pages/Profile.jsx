@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   User, Shield, Monitor, Clock, Package, LogOut,
   Save, Camera, Trash2, X, AlertTriangle, CheckCircle,
@@ -22,7 +22,32 @@ const TABS = [
 export default function Profile() {
   const { account, logout, updateAccount } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState('personal');
+
+  useEffect(() => {
+    const handleAutoLink = async () => {
+      const redirectTo = searchParams.get('redirect_to');
+      const product = searchParams.get('product');
+
+      if (redirectTo && product) {
+        try {
+          // Attempt to link the product if not already linked
+          if (!account.linkedProducts?.[product]?.linked) {
+            await profileAPI.linkProduct(product);
+          }
+        } catch (e) {
+          console.error('Auto link failed', e);
+        }
+        // Redirect to the target application
+        window.location.href = redirectTo;
+      }
+    };
+
+    if (account) {
+      handleAutoLink();
+    }
+  }, [account, searchParams]);
 
   if (!account) {
     navigate('/login');
