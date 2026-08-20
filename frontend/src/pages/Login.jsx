@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import '../App.css';
@@ -7,6 +7,9 @@ import '../App.css';
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get('redirect_to');
+  const product = searchParams.get('product');
 
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
@@ -24,8 +27,12 @@ export default function Login() {
     setError('');
 
     try {
-      await login(formData);
-      navigate('/profile');
+      await login({ ...formData, product });
+      if (redirectTo) {
+        window.location.href = redirectTo;
+      } else {
+        navigate('/profile');
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {
@@ -112,7 +119,7 @@ export default function Login() {
         </form>
 
         <div className="auth-footer">
-          Don't have an account? <Link to="/signup">Create one</Link>
+          Don't have an account? <Link to={`/signup${searchParams.toString() ? `?${searchParams.toString()}` : ''}`}>Create one</Link>
         </div>
       </div>
     </div>

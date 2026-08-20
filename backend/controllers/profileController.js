@@ -429,7 +429,7 @@ export const getLinkedProducts = async (req, res) => {
         icon: '✉️',
         linked: account.linkedProducts.mail.linked,
         linkedAt: account.linkedProducts.mail.linkedAt,
-        url: '#',
+        url: process.env.MAIL_URL || 'https://mail.graxion.in',
       },
     ];
 
@@ -443,6 +443,36 @@ export const getLinkedProducts = async (req, res) => {
       success: false,
       message: 'Error fetching linked products',
     });
+  }
+};
+
+/**
+ * @desc    Link a product to the account
+ * @route   POST /api/profile/link-product
+ * @access  Private
+ */
+export const linkProduct = async (req, res) => {
+  try {
+    const { product } = req.body;
+    
+    if (!product || !['mail', 'flow', 'ai'].includes(product)) {
+      return res.status(400).json({ success: false, message: 'Invalid product' });
+    }
+
+    const account = await Account.findById(req.account._id);
+    
+    if (!account.linkedProducts) account.linkedProducts = {};
+    if (!account.linkedProducts[product]) account.linkedProducts[product] = {};
+    
+    account.linkedProducts[product].linked = true;
+    account.linkedProducts[product].linkedAt = new Date();
+    
+    await account.save();
+    
+    res.json({ success: true, message: `${product} linked successfully`, data: account.linkedProducts });
+  } catch (error) {
+    console.error('Link product error:', error);
+    res.status(500).json({ success: false, message: 'Error linking product' });
   }
 };
 

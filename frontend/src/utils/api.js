@@ -111,6 +111,7 @@ export const profileAPI = {
   revokeAllSessions: () => api.post('/profile/sessions/revoke-all'),
   getLoginHistory: (page = 1) => api.get(`/profile/login-history?page=${page}`),
   getLinkedProducts: () => api.get('/profile/linked-products'),
+  linkProduct: (product) => api.post('/profile/link-product', { product }),
 };
 
 // ── Token Helpers ──

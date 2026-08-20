@@ -649,6 +649,23 @@ function ProductsTab() {
     } finally {
       setLoading(false);
     }
+  const handleProductClick = async (e, product) => {
+    if (product.url === '#') {
+      e.preventDefault();
+      return;
+    }
+    if (!product.linked) {
+      e.preventDefault();
+      try {
+        await profileAPI.linkProduct(product.id);
+        fetchProducts();
+        
+        // Open the URL directly
+        window.open(product.url, '_blank', 'noopener,noreferrer');
+      } catch {
+        // error handled by interceptor or silent
+      }
+    }
   };
 
   return (
@@ -670,6 +687,7 @@ function ProductsTab() {
               target={product.url !== '#' ? '_blank' : undefined}
               rel="noopener noreferrer"
               style={{ textDecoration: 'none' }}
+              onClick={(e) => handleProductClick(e, product)}
             >
               <div className="product-icon">{product.icon}</div>
               <div className="product-name">{product.name}</div>
@@ -678,7 +696,7 @@ function ProductsTab() {
                 {product.linked ? (
                   <><CheckCircle size={12} /> Linked</>
                 ) : (
-                  'Not linked'
+                  'Click to Link'
                 )}
               </div>
             </a>

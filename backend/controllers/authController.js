@@ -59,6 +59,11 @@ export const signup = async (req, res) => {
       password,
     });
 
+    if (req.body.product === 'mail') {
+      if (!account.linkedProducts) account.linkedProducts = {};
+      account.linkedProducts.mail = { linked: true, linkedAt: new Date() };
+    }
+
     // Generate email verification token
     const verifyToken = account.createEmailVerifyToken();
     await account.save({ validateBeforeSave: false });
@@ -226,6 +231,14 @@ export const login = async (req, res) => {
     // Update last login
     account.lastLogin = new Date();
     account.lastLoginIP = req.ip;
+    
+    if (req.body.product === 'mail') {
+      if (!account.linkedProducts) account.linkedProducts = {};
+      if (!account.linkedProducts.mail?.linked) {
+        account.linkedProducts.mail = { linked: true, linkedAt: new Date() };
+      }
+    }
+    
     await account.save({ validateBeforeSave: false });
 
     // Create session

@@ -10,6 +10,7 @@ import {
   revokeAllSessions,
   getLoginHistory,
   getLinkedProducts,
+  linkProduct,
   deleteAccount,
 } from '../controllers/profileController.js';
 import { protect } from '../middleware/auth.js';
@@ -42,5 +43,6 @@ router.get('/login-history', getLoginHistory);
 
 // Linked Products
 router.get('/linked-products', getLinkedProducts);
+router.post('/link-product', linkProduct);
 
 export default router;
