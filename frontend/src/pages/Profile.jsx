@@ -27,17 +27,19 @@ export default function Profile() {
 
   useEffect(() => {
     const handleAutoLink = async () => {
-      const redirectTo = searchParams.get('redirect_to');
+      const redirectTo = searchParams.get('redirect_to') || searchParams.get('redirect');
       const product = searchParams.get('product');
 
-      if (redirectTo && product) {
-        try {
-          // Attempt to link the product if not already linked
-          if (!account.linkedProducts?.[product]?.linked) {
-            await profileAPI.linkProduct(product);
+      if (redirectTo) {
+        if (product) {
+          try {
+            // Attempt to link the product if not already linked
+            if (!account.linkedProducts?.[product]?.linked) {
+              await profileAPI.linkProduct(product);
+            }
+          } catch (e) {
+            console.error('Auto link failed', e);
           }
-        } catch (e) {
-          console.error('Auto link failed', e);
         }
         // Redirect to the target application
         window.location.href = redirectTo;
