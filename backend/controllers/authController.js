@@ -71,7 +71,7 @@ export const signup = async (req, res) => {
     const refreshToken = generateRefreshToken(account._id);
     const refreshExpiry = parseExpiryToMs(process.env.JWT_REFRESH_EXPIRES || '7d');
 
-    await Session.create({
+    const session = await Session.create({
       account: account._id,
       refreshToken,
       userAgent,
@@ -94,7 +94,7 @@ export const signup = async (req, res) => {
     });
 
     // Generate access token
-    const accessToken = generateAccessToken(account._id);
+    const accessToken = generateAccessToken(account._id, session._id);
 
     // Set refresh token in httpOnly cookie
     res.cookie('graxion_refresh_token', refreshToken, {
@@ -232,7 +232,7 @@ export const login = async (req, res) => {
     const refreshToken = generateRefreshToken(account._id);
     const refreshExpiry = parseExpiryToMs(process.env.JWT_REFRESH_EXPIRES || '7d');
 
-    await Session.create({
+    const session = await Session.create({
       account: account._id,
       refreshToken,
       userAgent,
@@ -255,7 +255,7 @@ export const login = async (req, res) => {
     });
 
     // Generate access token
-    const accessToken = generateAccessToken(account._id);
+    const accessToken = generateAccessToken(account._id, session._id);
 
     // Set refresh token in httpOnly cookie
     res.cookie('graxion_refresh_token', refreshToken, {
@@ -392,7 +392,7 @@ export const refreshAccessToken = async (req, res) => {
     await session.save();
 
     // Generate new access token
-    const accessToken = generateAccessToken(account._id);
+    const accessToken = generateAccessToken(account._id, session._id);
 
     res.json({
       success: true,

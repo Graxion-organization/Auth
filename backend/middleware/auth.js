@@ -51,6 +51,17 @@ export const protect = async (req, res, next) => {
       });
     }
 
+    // Check if session is still active
+    if (decoded.sessionId) {
+      const session = await Session.findById(decoded.sessionId);
+      if (!session || !session.isActive) {
+        return res.status(401).json({
+          success: false,
+          message: 'Session has been revoked or expired',
+        });
+      }
+    }
+
     req.account = account;
     next();
   } catch (error) {
@@ -105,7 +116,14 @@ export const optionalAuth = async (req, res, next) => {
     if (token) {
       const decoded = verifyAccessToken(token);
       const account = await Account.findById(decoded.id);
-      if (account && account.isActive) {
+      
+      let sessionValid = true;
+      if (decoded.sessionId) {
+        const session = await Session.findById(decoded.sessionId);
+        if (!session || !session.isActive) sessionValid = false;
+      }
+
+      if (account && account.isActive && sessionValid) {
         req.account = account;
       }
     }
