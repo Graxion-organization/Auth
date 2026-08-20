@@ -17,24 +17,19 @@ connectDB();
 
 const app = express();
 
-// CORS — Allow all Graxion products
-const allowedOrigins = [
-  process.env.GRAXION_MAIN_URL,
-  process.env.FLOW_URL,
-  process.env.CLIENT_URL,
-  process.env.AI_URL,
-  'https://graxion.in',
-  'https://www.graxion.in',
-  'https://accounts.graxion.in',
-  'https://flow.graxion.in',
-  'https://ai.graxion.in',
-  'https://mail.graxion.in',
-].filter(Boolean);
-
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (mobile apps, Postman, etc.)
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    if (!origin) {
+      return callback(null, true);
+    }
+    
+    // Dynamic CORS matching
+    const isLocalhost = /^http:\/\/localhost:\d+$/.test(origin);
+    const isGraxion = /\.graxion\.in$/.test(origin) || origin === 'https://graxion.in';
+    const isVercel = /\.vercel\.app$/.test(origin);
+    
+    if (isLocalhost || isGraxion || isVercel) {
       callback(null, true);
     } else {
       console.error('CORS blocked request from origin:', origin);
