@@ -41,8 +41,14 @@ export default function Profile() {
             console.error('Auto link failed', e);
           }
         }
-        // Redirect to the target application
-        window.location.href = redirectTo;
+        // Redirect to the target application with token
+        const token = localStorage.getItem('graxion_access_token');
+        if (token) {
+          const sep = redirectTo.includes('?') ? '&' : '?';
+          window.location.href = `${redirectTo}${sep}token=${token}`;
+        } else {
+          window.location.href = redirectTo;
+        }
       }
     };
 
