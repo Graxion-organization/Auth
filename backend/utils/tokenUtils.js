@@ -7,7 +7,7 @@ export const generateAccessToken = (accountId, sessionId) => {
   return jwt.sign(
     { id: accountId, sessionId, type: 'access' },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_ACCESS_EXPIRES || '15m' }
+    { expiresIn: process.env.JWT_ACCESS_EXPIRES || '7d' }
   );
 };
 
