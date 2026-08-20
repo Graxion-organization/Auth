@@ -172,7 +172,7 @@ accountSchema.virtual('fullName').get(function () {
 });
 
 // Pre-save: Auto-generate username from email if not set
-accountSchema.pre('save', async function (next) {
+accountSchema.pre('save', async function () {
   if (!this.username) {
     const baseUsername = this.email.split('@')[0].replace(/[^a-z0-9]/gi, '').toLowerCase();
     let username = baseUsername;
@@ -185,14 +185,12 @@ accountSchema.pre('save', async function (next) {
     }
     this.username = username;
   }
-  next();
 });
 
 // Pre-save: Hash password
-accountSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+accountSchema.pre('save', async function () {
+  if (!this.isModified('password')) return;
   this.password = await bcrypt.hash(this.password, 12);
-  next();
 });
 
 // Method: Compare password
