@@ -78,7 +78,7 @@ export default function Profile() {
         <div className="nav-user">
           <div className="user-avatar" title={account.fullName || account.email}>
             {account.avatar ? (
-              <img src={`/${account.avatar}`} alt="Avatar" />
+              <img src={account.avatar} alt="Avatar" />
             ) : (
               (account.firstName?.[0] || 'U').toUpperCase()
             )}
@@ -213,7 +213,7 @@ function PersonalInfoTab({ account, updateAccount }) {
         <div className="avatar-section">
           <div className="avatar-preview">
             {account.avatar ? (
-              <img src={`/${account.avatar}`} alt="Avatar" />
+              <img src={account.avatar} alt="Avatar" />
             ) : (
               (account.firstName?.[0] || 'U').toUpperCase()
             )}
