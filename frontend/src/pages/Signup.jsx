@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, User, AlertCircle, ArrowRight, Check } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { authAPI } from '../utils/api';
 import '../App.css';
 
 export default function Signup() {
@@ -72,8 +73,17 @@ export default function Signup() {
     try {
       await signup({ ...formData, product });
       if (redirectTo) {
-        // Pass the token via URL for cross-domain SSO
-        const token = localStorage.getItem('graxion_access_token');
+        let token = localStorage.getItem('graxion_access_token');
+        if (product) {
+          try {
+            const { data } = await authAPI.getSsoToken(product);
+            if (data?.data?.ssoToken) {
+              token = data.data.ssoToken;
+            }
+          } catch (e) {
+            console.error('Failed to fetch SSO token', e);
+          }
+        }
         const sep = redirectTo.includes('?') ? '&' : '?';
         window.location.href = token ? `${redirectTo}${sep}token=${token}` : redirectTo;
       } else {
