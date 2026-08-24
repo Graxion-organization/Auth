@@ -41,8 +41,18 @@ export default function Profile() {
             console.error('Auto link failed', e);
           }
         }
-        // Redirect to the target application with token
-        const token = localStorage.getItem('graxion_access_token');
+        let token = localStorage.getItem('graxion_access_token');
+        if (product) {
+          try {
+            const { data } = await authAPI.getSsoToken(product);
+            if (data?.data?.ssoToken) {
+              token = data.data.ssoToken;
+            }
+          } catch (e) {
+            console.error('Failed to fetch SSO token', e);
+          }
+        }
+        
         if (token) {
           const sep = redirectTo.includes('?') ? '&' : '?';
           window.location.href = `${redirectTo}${sep}token=${token}`;
