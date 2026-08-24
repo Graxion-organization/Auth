@@ -10,6 +10,7 @@ import {
   resetPassword,
   changePassword,
   getMe,
+  generateSsoToken,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
 
@@ -27,6 +28,7 @@ router.post('/reset-password/:token', resetPassword);
 router.use(protect); // All routes below require authentication
 router.post('/logout', logout);
 router.get('/me', getMe);
+router.get('/sso-token', generateSsoToken);
 router.post('/resend-verification', resendVerification);
 router.put('/change-password', changePassword);
 

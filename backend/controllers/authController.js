@@ -749,3 +749,50 @@ export const getMe = async (req, res) => {
     });
   }
 };
+
+/**
+ * @desc    Generate SSO Token for external Graxion products (e.g. Flow)
+ * @route   GET /api/auth/sso-token?service=flow
+ * @access  Private
+ */
+export const generateSsoToken = async (req, res) => {
+  try {
+    const { service } = req.query;
+    if (!service) {
+      return res.status(400).json({ success: false, message: 'Service parameter is required' });
+    }
+
+    if (!process.env.GRAXION_SSO_SECRET) {
+      return res.status(500).json({ success: false, message: 'SSO is not configured on this server' });
+    }
+
+    const account = req.account;
+    
+    // Import jwt specifically for SSO
+    const jwt = await import('jsonwebtoken');
+    
+    const payload = {
+      accountId: account._id,
+      email: account.email,
+      name: account.fullName,
+      service: service
+    };
+
+    // SSO token is short-lived (1 minute) because it should be consumed immediately
+    const ssoToken = jwt.default.sign(payload, process.env.GRAXION_SSO_SECRET, { expiresIn: '1m' });
+
+    res.json({
+      success: true,
+      data: {
+        ssoToken,
+        service
+      }
+    });
+  } catch (error) {
+    console.error('SSO Token error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error generating SSO token',
+    });
+  }
+};
