@@ -689,17 +689,30 @@ function ProductsTab() {
       e.preventDefault();
       return;
     }
-    if (!product.linked) {
-      e.preventDefault();
-      try {
+    e.preventDefault();
+    try {
+      if (!product.linked) {
         await profileAPI.linkProduct(product.id);
         fetchProducts();
-        
-        // Open the URL directly
-        window.open(product.url, '_blank', 'noopener,noreferrer');
-      } catch {
-        // error handled by interceptor or silent
       }
+      
+      let finalUrl = product.url;
+      try {
+        const { data } = await authAPI.getSsoToken(product.id);
+        const ssoToken = data?.data?.ssoToken;
+        if (ssoToken) {
+          const baseUrl = product.url.endsWith('/') ? product.url.slice(0, -1) : product.url;
+          finalUrl = `${baseUrl}/sso-callback?token=${ssoToken}`;
+        }
+      } catch (ssoErr) {
+        console.error('Failed to get SSO token', ssoErr);
+        // Fallback to normal URL if SSO fails
+      }
+      
+      // Open the URL directly
+      window.open(finalUrl, '_blank', 'noopener,noreferrer');
+    } catch {
+      // error handled by interceptor or silent
     }
   };
 

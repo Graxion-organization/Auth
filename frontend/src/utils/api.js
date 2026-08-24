@@ -94,6 +94,7 @@ export const authAPI = {
   forgotPassword: (data) => api.post('/auth/forgot-password', data),
   resetPassword: (token, data) => api.post(`/auth/reset-password/${token}`, data),
   changePassword: (data) => api.put('/auth/change-password', data),
+  getSsoToken: (service) => api.get(`/auth/sso-token?service=${service}`),
 };
 
 // ── Profile API ──
