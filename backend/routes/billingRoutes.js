@@ -1,5 +1,5 @@
 import express from 'express';
-import { protect } from '../middlewares/authMiddleware.js';
+import { protect } from '../middleware/auth.js';
 import { getPlans, createOrder, verifyPayment } from '../controllers/billingController.js';
 
 const router = express.Router();
