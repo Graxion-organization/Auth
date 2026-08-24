@@ -15,7 +15,19 @@ const getRazorpayInstance = () => {
 
 export const getPlans = async (req, res) => {
   try {
-    const plans = await Plan.find({ isActive: true }).sort({ price: 1 });
+    let plans = await Plan.find({ isActive: true }).sort({ price: 1 });
+    
+    // Auto-seed plans if DB is empty
+    if (plans.length === 0) {
+      const defaultPlans = [
+        { name: 'Free', code: 'free', price: 0, credits: 100, messageLimit: 100, agentLimit: 1 },
+        { name: 'Starter', code: 'starter', price: 999, credits: 1000, messageLimit: 5000, agentLimit: 3 },
+        { name: 'Pro', code: 'pro', price: 2999, credits: 5000, messageLimit: 20000, agentLimit: 10 }
+      ];
+      await Plan.insertMany(defaultPlans);
+      plans = await Plan.find({ isActive: true }).sort({ price: 1 });
+    }
+
     res.json({ success: true, data: plans });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Failed to fetch plans' });
