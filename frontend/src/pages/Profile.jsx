@@ -17,7 +17,6 @@ const TABS = [
   { id: 'security', label: 'Security', icon: Shield },
   { id: 'sessions', label: 'Sessions', icon: Monitor },
   { id: 'products', label: 'Products', icon: Package },
-  { id: 'billing', label: 'Billing & Plans', icon: CreditCard },
   { id: 'history', label: 'Activity', icon: Clock },
 ];
 
@@ -126,7 +125,6 @@ export default function Profile() {
         {activeTab === 'security' && <SecurityTab />}
         {activeTab === 'sessions' && <SessionsTab />}
         {activeTab === 'products' && <ProductsTab />}
-        {activeTab === 'billing' && <BillingTab account={account} />}
         {activeTab === 'history' && <HistoryTab />}
       </div>
     </div>

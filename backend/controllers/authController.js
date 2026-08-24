@@ -776,7 +776,6 @@ export const generateSsoToken = async (req, res) => {
       email: account.email,
       name: account.fullName,
       avatar: account.avatar,
-      subscription: account.subscription,
       service: service
     };
 
