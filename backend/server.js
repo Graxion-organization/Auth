@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
+import billingRoutes from './routes/billingRoutes.js';
 
 // Load env vars
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -48,6 +49,7 @@ app.use(express.urlencoded({ extended: true }));
 // ── API Routes ──
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/billing', billingRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

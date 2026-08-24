@@ -4,11 +4,12 @@ import {
   User, Shield, Monitor, Clock, Package, LogOut,
   Save, Camera, Trash2, X, AlertTriangle, CheckCircle,
   ChevronRight, Smartphone, Laptop, Tablet, Globe,
-  Lock, Eye, EyeOff, AlertCircle, RefreshCw
+  Lock, Eye, EyeOff, AlertCircle, RefreshCw, CreditCard
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { profileAPI, authAPI } from '../utils/api';
 import toast, { Toaster } from 'react-hot-toast';
+import BillingTab from './BillingTab';
 import '../App.css';
 
 const TABS = [
@@ -16,6 +17,7 @@ const TABS = [
   { id: 'security', label: 'Security', icon: Shield },
   { id: 'sessions', label: 'Sessions', icon: Monitor },
   { id: 'products', label: 'Products', icon: Package },
+  { id: 'billing', label: 'Billing & Plans', icon: CreditCard },
   { id: 'history', label: 'Activity', icon: Clock },
 ];
 
@@ -124,6 +126,7 @@ export default function Profile() {
         {activeTab === 'security' && <SecurityTab />}
         {activeTab === 'sessions' && <SessionsTab />}
         {activeTab === 'products' && <ProductsTab />}
+        {activeTab === 'billing' && <BillingTab account={account} />}
         {activeTab === 'history' && <HistoryTab />}
       </div>
     </div>

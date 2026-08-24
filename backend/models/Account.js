@@ -133,6 +133,32 @@ const accountSchema = new mongoose.Schema({
     },
   },
 
+  // Subscription
+  subscription: {
+    plan: { type: String, default: 'free' },
+    status: { type: String, enum: ['active', 'inactive', 'cancelled', 'past_due'], default: 'active' },
+    lastPlan: { type: String, default: null },
+    razorpaySubscriptionId: String,
+    razorpayCustomerId: String,
+    currentPeriodStart: Date,
+    currentPeriodEnd: Date,
+    messageLimit: { type: Number, default: 100 },
+    agentLimit: { type: Number, default: 1 },
+    credits: { type: Number, default: 100 },
+    totalCredits: { type: Number, default: 100 },
+    agentCreditLimit: { type: Number, default: 0 },
+    postingCreditLimit: { type: Number, default: 0 },
+  },
+
+  // Usage tracking
+  usage: {
+    messagesThisMonth: { type: Number, default: 0 },
+    totalMessages: { type: Number, default: 0 },
+    agentCreditsUsedThisMonth: { type: Number, default: 0 },
+    postingCreditsUsedThisMonth: { type: Number, default: 0 },
+    lastResetDate: { type: Date, default: Date.now },
+  },
+
   // Preferences
   preferences: {
     theme: {

@@ -95,6 +95,9 @@ export const authAPI = {
   resetPassword: (token, data) => api.post(`/auth/reset-password/${token}`, data),
   changePassword: (data) => api.put('/auth/change-password', data),
   getSsoToken: (service) => api.get(`/auth/sso-token?service=${service}`),
+  getPlans: () => api.get('/billing/plans'),
+  createOrder: (data) => api.post('/billing/create-order', data),
+  verifyPayment: (data) => api.post('/billing/verify', data),
 };
 
 // ── Profile API ──
