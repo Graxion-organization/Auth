@@ -42,18 +42,8 @@ export default function Profile() {
             console.error('Auto link failed', e);
           }
         }
-        let token = localStorage.getItem('graxion_access_token');
-        if (product) {
-          try {
-            const { data } = await authAPI.getSsoToken(product);
-            if (data?.data?.ssoToken) {
-              token = data.data.ssoToken;
-            }
-          } catch (e) {
-            console.error('Failed to fetch SSO token', e);
-          }
-        }
         
+        const token = localStorage.getItem('graxion_access_token');
         if (token) {
           const sep = redirectTo.includes('?') ? '&' : '?';
           window.location.href = `${redirectTo}${sep}token=${token}`;
@@ -708,16 +698,10 @@ function ProductsTab() {
       }
       
       let finalUrl = product.url;
-      try {
-        const { data } = await authAPI.getSsoToken(product.id);
-        const ssoToken = data?.data?.ssoToken;
-        if (ssoToken) {
-          const baseUrl = product.url.endsWith('/') ? product.url.slice(0, -1) : product.url;
-          finalUrl = `${baseUrl}/sso-callback?token=${ssoToken}`;
-        }
-      } catch (ssoErr) {
-        console.error('Failed to get SSO token', ssoErr);
-        // Fallback to normal URL if SSO fails
+      const token = localStorage.getItem('graxion_access_token');
+      if (token) {
+        const baseUrl = product.url.endsWith('/') ? product.url.slice(0, -1) : product.url;
+        finalUrl = `${baseUrl}/?token=${token}`;
       }
       
       // Open the URL directly

@@ -30,17 +30,7 @@ export default function Login() {
     try {
       await login({ ...formData, product });
       if (redirectTo) {
-        let token = localStorage.getItem('graxion_access_token');
-        if (product) {
-          try {
-            const { data } = await authAPI.getSsoToken(product);
-            if (data?.data?.ssoToken) {
-              token = data.data.ssoToken;
-            }
-          } catch (e) {
-            console.error('Failed to fetch SSO token', e);
-          }
-        }
+        const token = localStorage.getItem('graxion_access_token');
         const sep = redirectTo.includes('?') ? '&' : '?';
         window.location.href = token ? `${redirectTo}${sep}token=${token}` : redirectTo;
       } else {
